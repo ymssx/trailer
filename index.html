@@ -1,0 +1,166 @@
+<html>
+<title>snake</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<head>
+	<script src="main.js"></script>
+	<script src="jquery.js"></script>
+	<script>
+		$(document).ready(function(){
+		})
+
+		function move(card_order,user)
+		{
+			$("#canvas").append(card(card_order,user));
+			var special_permission=0;
+			if(card_order=="special")
+			{
+				card_order=55+special_num;
+				var special_permission=1;
+			}
+			eval("$('#card"+desk_number+"').hide()");
+			eval("$('#desk"+desk_number+"').animate({'top':'"+(desk_number+1)*35+"px','left':'505px'},0)");
+			setTimeout(function(){
+				eval("$('#card"+desk_number+"').fadeIn()");
+				desk_number++;
+				if (user=="myself" && special_permission==0)
+				{
+					my_order.splice(0,1);
+					fresh_myself();
+					win(user);
+				}
+				if (user=="enemy" && special_permission==0)
+				{
+					enemy_order.splice(0,1);
+					fresh_enemy();
+					win(user);
+				}
+				desk_order.splice((desk_number-1),0,card_order);
+				setTimeout(function(){charge(card_order,user)},1000)
+			},300)
+		}
+
+		function remove(del_order,user)
+		{
+			var temp_top=document.getElementById("desk"+(desk_number-1));
+			for (var m=del_order;m<desk_number;m++)
+			{
+				var temp_desk=document.getElementById("desk"+m);
+				temp_desk.style.top=temp_top.style.top;
+			}
+			setTimeout(function(){
+				for (var n=del_order;n<desk_number;n++)
+				{
+					var temp_desk=document.getElementById("desk"+n);
+					temp_desk.style.top="445px";
+					if (user=="myself")
+					{temp_desk.style.left="35px";}
+					else
+						{temp_desk.style.left="975px";}
+					eval("$('#card"+n+"').fadeOut()");
+				}
+				setTimeout(function(){
+					for (var o=del_order;o<desk_number;o++)
+					{
+						eval("$('#desk"+o+"').remove();");
+						fresh_myself();
+						fresh_enemy();
+					}
+					desk_number=del_order;
+					if (user=="myself")
+					{
+						play('enemy');
+					}
+					if (user=="enemy")
+					{click_permission=1;}
+				},1000)
+			},1000)
+		}
+	</script>
+	<style type="text/css">
+	.canvas
+	{
+		position:fixed;
+		width:1120px;
+		height:630px;
+		top:50%;
+		left:50%;
+		transform:translate(-50%,-50%);
+		background-color:#fff;
+		border-radius:10px;
+	}
+
+	.cover
+	{
+		position:absolute;
+		width:110px;
+		height:150px;
+		bottom:35px;
+		background-color:#00cc47;
+		border-radius:7px;
+		z-index:999;
+		cursor:pointer;
+	}
+
+	.face
+	{
+		position:absolute;
+		width:110px;
+		height:150px;
+		background-color:#eee;
+		border-radius:7px;
+	}
+
+	.face_number
+	{
+		font-size:25px;
+		position:absolute;
+		top:0px;
+		left:7px;
+	}
+	.face_number_rotate
+	{
+		font-size:25px;
+		position:absolute;
+		bottom:0px;
+		right:7px;
+		transform:rotate(180deg);
+	}
+	.logo
+	{
+		font-size:50px;
+		position:absolute;
+		top:50%;
+		left:50%;
+		text-align:center;
+		transform:translate(-50%,-50%);
+		width:50px;
+		height:70px;
+	}
+	.move_box
+	{
+		box-shadow:-1px -1px 1px #d5d5d5;
+		position:absolute;
+		width:110px;
+		height:150px;
+		top:445px;
+		left:35px;
+		background-color:#ddd;
+		border-radius:7px;
+		transition:all 1s;
+		-webkit-transition:all 1s;
+		cursor:pointer;
+		z-index:9;
+	}
+	.move_box:hover
+	{
+		transform:rotate(-15deg);
+	}
+	</style>
+</head>
+<body style="background-color:#eee" oncontextmenu="return false;" onselect="return false;" onselectstart="return false;">
+	<div id="canvas" class="canvas">
+		<div id="my_desk" class="cover" onclick="play('myself')" style="left:35px"><div class="logo" style="font-size:30px;color:#fff;height:40px" id="my_num">27</div></div>
+		<div id="enemy_desk" class="cover"style="left:975px;background-color:#1E90FF"><div class="logo" style="font-size:30px;color:#fff;height:40px" id="enemy_num">27</div></div>
+	</div>
+</body>
+</html>

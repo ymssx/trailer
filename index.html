@@ -1,11 +1,29 @@
 <html>
-<title>snake</title>
+<title>trailer</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <head>
 	<script src="main.js"></script>
-	<script src="jquery.js"></script>
+	<script src="jquery.min.js"></script>
 	<script>
 		$(document).ready(function(){
+			$("#shop_title").hide();
+			$("#flower").mouseenter(function(){
+				$("#shop").css({"transform":"rotate(180deg)"});
+				$("#flower").css({"color":"pink"});
+				$("#gold_title").hide();
+				$("#shop_title").fadeIn();
+			})
+			$("#flower").mouseout(function(){
+				$("#shop").css({"transform":"rotate(0deg)"});
+				$("#flower").css({"color":"#5c5e51"});
+				$("#shop_title").hide();
+				$("#gold_title").fadeIn();
+			})
+			for (var x=0;x<9;x++)
+			{
+				var div_text="<div class='shop_card'><div class='face' style='color:"+special_color[x]+"'><div class='face_number'>S</div><div class='logo' style='font-size:65px;height:95px;width:80px;'>"+special[x]+"</div><div class='face_number_rotate' style='transform:rotate(0deg);font-size:20px'>2K</div></div></div>";
+				$(".inner_shop").append(div_text);
+			}
 		})
 
 		function move(card_order,user)
@@ -51,11 +69,16 @@
 				for (var n=del_order;n<desk_number;n++)
 				{
 					var temp_desk=document.getElementById("desk"+n);
-					temp_desk.style.top="445px";
 					if (user=="myself")
-					{temp_desk.style.left="35px";}
+					{
+						temp_desk.style.left="35px";
+						temp_desk.style.top="442px";
+					}
 					else
-						{temp_desk.style.left="975px";}
+					{
+						temp_desk.style.left="972px";
+						temp_desk.style.top="37px";
+					}
 					eval("$('#card"+n+"').fadeOut()");
 				}
 				setTimeout(function(){
@@ -64,6 +87,8 @@
 						eval("$('#desk"+o+"').remove();");
 						fresh_myself();
 						fresh_enemy();
+						if (user=="myself")
+						{fresh_gold();}
 					}
 					desk_number=del_order;
 					if (user=="myself")
@@ -75,6 +100,48 @@
 				},1000)
 			},1000)
 		}
+	function fresh_gold()
+	{
+		var temp_gold=parseInt(document.getElementById("gold_title").innerHTML)+100;
+		money=temp_gold;
+		document.getElementById("gold_title").innerHTML=temp_gold;
+	}
+
+	var show_permission=1;
+	var click_permission_shop=1;
+	function show_shop()
+	{
+		if (click_permission_shop==1)
+		{
+			click_permission_shop=0;
+			setTimeout(function(){click_permission_shop=1;},500);
+			if (show_permission==1)
+			{
+				inner_shop.style.height="200px";
+				inner_shop.style.width="1120px";
+				show_permission=0;
+				var temp_top=$("#canvas").offset().top+510;
+				$("#canvas").css({"top":(temp_top+"px")});
+			}
+			else
+			{
+				inner_shop.style.height="0px";
+				inner_shop.style.width="1120px";
+				show_permission=1;
+				var temp_top2=$("#canvas").offset().top+120;
+				$("#canvas").css({"top":(temp_top2+"px")});
+			}
+		}
+	}
+	function buy(card_order)
+	{
+		var temp_price=special_price[card_order];
+		if (money>=temp_price)
+		{
+			money-=temp_price;
+			my_spec.splice(0,0,55+card_order);
+		}
+	}
 	</script>
 	<style type="text/css">
 	.canvas
@@ -85,8 +152,10 @@
 		top:50%;
 		left:50%;
 		transform:translate(-50%,-50%);
-		background-color:#fff;
+		background-color:#2e2f29;
 		border-radius:10px;
+		transition:all 0.5s;
+		-webkit-transition:all 0.5s;
 	}
 
 	.cover
@@ -95,12 +164,31 @@
 		width:110px;
 		height:150px;
 		bottom:35px;
-		background-color:#00cc47;
+		background-color:#22231e;
 		border-radius:7px;
 		z-index:999;
 		cursor:pointer;
+		transition:all 1s;
+		-webkit-transition:all 1s;
+		font-family:Microsoft YaHei;
 	}
-
+	.cover:hover
+	{
+		transform:rotate(10deg);
+	}
+	.cover_under
+	{
+		position:absolute;
+		width:110px;
+		height:150px;
+		border-color:#fff;
+		background-color:#272822;
+		border-radius:7px;
+		z-index:998;
+		cursor:pointer;
+		transition:all 0.5s;
+		-webkit-transition:all 0.5s;
+	}
 	.face
 	{
 		position:absolute;
@@ -108,6 +196,7 @@
 		height:150px;
 		background-color:#eee;
 		border-radius:7px;
+		font-family:Microsoft YaHei;
 	}
 
 	.face_number
@@ -135,10 +224,16 @@
 		transform:translate(-50%,-50%);
 		width:50px;
 		height:70px;
+		transition:all 0.5s;
+		-webkit-transition:all 0.5s;
+	}
+	.logo:hover
+	{
+		transform:translate(-50%,-50%) rotate(20deg);
 	}
 	.move_box
 	{
-		box-shadow:-1px -1px 1px #d5d5d5;
+		border:1px solid #d5d5d5;
 		position:absolute;
 		width:110px;
 		height:150px;
@@ -155,12 +250,66 @@
 	{
 		transform:rotate(-15deg);
 	}
+	.shop
+	{
+		position:absolute;
+		top:35px;
+		left:35px;
+		width:70px;
+		height:70px;
+		transition:all 1s;
+		-webkit-transition:all 1s;
+		cursor:pointer;
+	}
+	.inner_shop
+	{
+		position:absolute;
+		width:1120px;
+		height:0px;
+		left:0px;
+		bottom:650px;
+		background-color:#2e2f29;
+		z-index:9999;
+		border-radius:7px;
+		transition:all 0.5s;
+		-webkit-transition:all 0.5s;
+		display: -webkit-flex;
+    	display: flex;
+    	overflow:hidden;
+    	-webkit-justify-content: center;
+    	justify-content: center;
+	}
+	.shop_card
+	{
+		border:1px solid #d5d5d5;
+		width:110px;
+		height:150px;
+		background-color:#ddd;
+		border-radius:7px;
+		transition:all 0.5s;
+		-webkit-transition:all 0.5s;
+		cursor:pointer;
+		margin-top:25px;
+		margin-bottom:25px;
+		margin-left:5px;
+		margin-right:5px;
+	}
+	.shop_card:hover
+	{
+		transform:translate(0px,-10px);
+	}
 	</style>
 </head>
-<body style="background-color:#eee" oncontextmenu="return false;" onselect="return false;" onselectstart="return false;">
+<body id="body" style="background-color:#272822" oncontextmenu="return false;" onselect="return false;" onselectstart="return false;">
 	<div id="canvas" class="canvas">
-		<div id="my_desk" class="cover" onclick="play('myself')" style="left:35px"><div class="logo" style="font-size:30px;color:#fff;height:40px" id="my_num">27</div></div>
-		<div id="enemy_desk" class="cover"style="left:975px;background-color:#1E90FF"><div class="logo" style="font-size:30px;color:#fff;height:40px" id="enemy_num">27</div></div>
+		<div class="cover_under" style="left:35px;bottom:35px"></div>
+		<div class="cover_under" style="left:975px;top:35px"></div>
+		<div id="my_desk" class="cover" onclick="play('myself')" style="left:35px"><div class="logo" style="font-size:30px;color:#5c5e51;height:40px" id="my_num">27</div></div>
+		<div id="enemy_desk" class="cover"style="left:975px;top:35px;"><div class="logo" style="font-size:30px;color:#5c5e51;height:40px" id="enemy_num">27</div></div>
+		<div id="shop" class="shop"><p id="flower" style="font-size:70px;color:#5c5e51;position:absolute;top:-86.6px;left:50%;transform:translate(-50%,0px);transition:all 1s;-webkit-transition:all 1s" onclick="show_shop()">❋</p></div>
+		<p id="shop_title" style="font-size:30px;color:#fff;position:absolute;top:20px;left:115px;font-family:Microsoft YaHei;">SHOP</p>
+		<p id="gold_title" style="font-size:30px;color:#5c5e51;position:absolute;top:20px;left:115px;transition:all 0.5s;-webkit-transition:all 0.5s;font-family:Microsoft YaHei;">0</p>
+		<div id="inner_shop" class="inner_shop"></div>
 	</div>
 </body>
 </html>

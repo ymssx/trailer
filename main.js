@@ -1,7 +1,8 @@
 var number=["A","2","3","4","5","6","7","8","9","10","J","Q","K","JOKER"];
 var logo=["♥","♦","♣","♠","♚","♛"]
-var special=["❀","☣","☠","➹","☀","❄","☯","★","☂"]
-var special_color=["#ce9aa3","red","black","blue","red","#17c0cb","black","#cfd521","#00cc47"]
+var special=["❀","✤","☠","➹","✸","❄","☯","✬","☂"]
+var special_color=["#ce9aa3","green","black","blue","red","#17c0cb","black","orange","green"]
+var special_price=[2000,2000,2000,2000,2000,2000,2000,2000,2000]
 
 var card_order=0;
 var my_order=[];
@@ -10,6 +11,7 @@ var desk_number=0;
 var desk_order=[];
 var click_permission=1;
 var special_num=0;
+var money=0;
 
 window.onload=(function(){
 	create_cards();
@@ -21,6 +23,10 @@ document.onkeydown=function(event)
         if (e && e.keyCode==13 || e && e.keyCode==32)
         {
         	play('myself');
+        }
+        if (e && e.keyCode==83)
+        {
+        	show_shop();
         }
     } 
 
@@ -75,11 +81,11 @@ function card(card_order,user)
 {
 	if (user=="myself")
 	{
-		var temp_left="35px";
+		var temp_position="left:35px";
 	}
 	else
 	{
-		var temp_left="975px";
+		var temp_position="left:975px;top:35px";
 	}
 	if (card_order=="special")
 	{
@@ -89,12 +95,12 @@ function card(card_order,user)
 		eval("card"+(special_num+55)+".colors=special_color[temp_random_];");
 		eval("card"+(special_num+55)+".number='S'");
 		var temp_card=eval("card"+(special_num+55));
-		var div_text="<div id='desk"+desk_number+"' class='move_box' style='left:"+temp_left+"'><div id='card"+desk_number+"' class='face' style='color:"+temp_card.colors+"'><div class='face_number'>S</div><div class='logo' style='font-size:65px;height:95px;width:80px;'>"+temp_card.logo+"</div><div class='face_number_rotate'>S</div></div></div>";
+		var div_text="<div id='desk"+desk_number+"' class='move_box' style='"+temp_position+"'><div id='card"+desk_number+"' class='face' style='color:"+temp_card.colors+"'><div class='face_number'>S</div><div class='logo' style='font-size:65px;height:95px;width:80px;'>"+temp_card.logo+"</div><div class='face_number_rotate'>S</div></div></div>";
 	}
 	else
 	{
 		var temp_card=eval("card"+card_order);
-		var div_text="<div id='desk"+desk_number+"' class='move_box' style='left:"+temp_left+"'><div id='card"+desk_number+"' class='face' style='color:"+temp_card.colors+"'><div class='face_number'>"+temp_card.number+"</div><div class='logo'>"+temp_card.logo+"</div><div class='face_number_rotate'>"+temp_card.number+"</div></div></div>";
+		var div_text="<div id='desk"+desk_number+"' class='move_box' style='"+temp_position+"'><div id='card"+desk_number+"' class='face' style='color:"+temp_card.colors+"'><div class='face_number'>"+temp_card.number+"</div><div class='logo'>"+temp_card.logo+"</div><div class='face_number_rotate'>"+temp_card.number+"</div></div></div>";
 	}
 	return div_text;
 }
@@ -106,7 +112,7 @@ function play(user)
 		if (click_permission==1)
 		{
 			click_permission=0;
-			if (Math.floor(Math.random()*8)==1)
+			if (Math.floor(Math.random()*18)==1 && desk_number!=0)
 			{
 				move('special',user);
 			}
@@ -118,7 +124,7 @@ function play(user)
 	}
 	else
 	{
-		if (Math.floor(Math.random()*4)==1)
+		if (Math.floor(Math.random()*4)==1 && desk_number!=0)
 			{
 				move('special',user);
 			}
